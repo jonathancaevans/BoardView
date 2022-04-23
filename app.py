@@ -7,7 +7,6 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
 db = SQLAlchemy(app)
 
-
 class Wall(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
@@ -35,6 +34,9 @@ class Route(db.Model):
 
     wall_id = db.Column(db.Integer, db.ForeignKey('wall.id'))
     wall = db.relationship('Wall', backref=db.backref('routes', lazy=True))
+
+    setter_id = db.Column(db.Integer, db.ForeignKey('climber.id'))
+    setter = db.relationship('Climber', backref=db.backref('setters', lazy=True))
 
     name = db.Column(db.String(180))
     description = db.Column(db.String(180))
@@ -65,6 +67,9 @@ class Grade(db.Model):
 
 class Attempt(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+
+    route_id = db.Column(db.Integer, db.ForeignKey('route.id'))
+    route = db.relationship('Route', backref=db.backref('attempts', lazy=True))
 
     proposed_grade_id = db.Column(db.Integer, db.ForeignKey('grade.id'))
     grade = db.relationship('Grade', backref=db.backref('attempts', lazy=True))
